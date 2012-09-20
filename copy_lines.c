@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include "copy_lines.h"
-#include "write_line.h"
 
 #define LINEBREAK printf("\n")
 #define FLUSH while (getchar() != '\n')
@@ -22,7 +21,7 @@ int main(void)
 	/* Read user specified character */
 	LINEBREAK;
 	printf("Please type in a character (a-z): ");
-	while(scanf("%c",usr_ch) != 1 )
+	while(scanf("%c", &usr_ch) != 1 )
 		printf("ERROR: Invalid input, try again: ");
 
 	/* Call function to copy lines matching the user specified character */
@@ -33,6 +32,7 @@ int main(void)
 	printf("Done... a total of %d lines were copied", count_lines_copied);
 
 	/* Exit Program */
+	LINEBREAK; LINEBREAK;
 	return 0;
 }
 
