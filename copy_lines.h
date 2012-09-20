@@ -6,18 +6,13 @@
  * \return	number of lines copied
  * */
 
-#define LINEBREAK printf("\n")
-
-/* Function Declarations */
-int copy_lines(char usr_ch);
-char write_line(char ch, FILE* sp_read, FILE* sp_write);
-
 /* Function Definitions */
 int copy_lines(char usr_ch)
 {
 	/* Local Declarations */
-	int	count_lines = 0;
+	int	count_lines_read = 0;
 	int	count_lines_copied = 0;
+	int	current_line = 1
 	char	ch;
 	FILE*	sp_read;
 	FILE*	sp_write;
@@ -25,43 +20,37 @@ int copy_lines(char usr_ch)
 	/* Open streams for reading and writing */
 	if ((sp_read = fopen("speech.txt", "r")) == NULL)
 	{
-		LINEBREAK;
-		printf("ERROR 1: The file speech.txt failed to open");
+		printf("\nERROR 1: The file speech.txt failed to open");
 		return -1;
 	}
 
 	if ((sp_write = fopen("af_exec.txt", "w")) == NULL)
 	{
-		LINEBREAK;
-		printf("ERROR 1: The file af_exec.txt failed to open");
+		printf("\nERROR 1: The file af_exec.txt failed to open");
 		return -1;
 	}
 
-	/* Read from the 'src' stream */
-	do
-	{
-		ch = fgetc(sp_read);
-
-
-	}
+	/* Read from the 'src' stream until EOF */
 	while ((ch = fgetc(sp_read)) != EOF)
-	{	
-		/* if you are reading the first character in 'src' and it
-		 * matches the user specified character */
-		if ((count_chars_src == 1) && (ch == usr_ch))
-			count_lines_copied = write_line();
-
-		/* if you start reading a newline */
+	{
 		if (ch == '\n')
 		{
-			/* and you find it beginning with the user specified character */
-			if ((ch = fgetc(sp_read)) == usr_ch)
-			{
+			/* Read its first character */
+			ch = fgetc(sp_read);
 
-				/* copy the line */
-				ch = write_line (ch, sp_read, sp_write);
-				count_lines_copied++;
+			/* If it matches the user specified character */
+			if (ch == usr_ch)
+			{
+				/* Insert the matching character back into the 
+				 * input stream, as it is read again while
+				 * copying the line */
 				ungetc(ch, sp_read);
+
+				/* Copy and write line to target stream */
+				write_line(sp_read, sp_write);
+
+				/* Increment the no. of lines copied */
+				count_lines_copied++;
 			}
 		}
 	}
@@ -69,35 +58,17 @@ int copy_lines(char usr_ch)
 	/* Close all open streams */
 	if (fclose(sp_read) == EOF)
 	{
-		LINEBREAK;
-		printf("ERROR 2: The file speech.txt failed to close");
+		printf("\nERROR 2: The file speech.txt failed to close");
 		return -2;
 	}
 
 	if (fclose(sp_write) == EOF)
 	{
-		LINEBREAK;
-		printf("ERROR 2: The file af_exec.txt failed to close");
+		printf("\nERROR 2: The file af_exec.txt failed to close");
 		return -2;
 	}
 	/* Exit Function */
 	return count_lines_copied;
 }
 
-/* Write line */
-int write_line (char ch, FILE* sp_read, FILE* sp_write)
-{
-
-	/* begin newline in 'tgt' stream*/
-	fputc('\n', sp_write);
-	
-	/* and write all characters from 'src' until end of line */
-	while (ch != '\n' && ch != EOF)
-	{
-		fputc(ch, sp_write);
-		ch = fgetc(sp_read);
-	}
-
-	return ch;
-}
 

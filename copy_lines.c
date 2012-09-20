@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include "copy_lines.h"
+#include "write_line.h"
 
 #define LINEBREAK printf("\n")
 #define FLUSH while (getchar() != '\n')
